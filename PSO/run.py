@@ -13,7 +13,6 @@ game_over = False
 
 #initalitizing the birds
 initial = [300,300]
-numberOfBirds = 50
 inertia = [-3,-4]
 
 birds = []
@@ -21,9 +20,13 @@ velocities = []
 Pbests = []
 bestPos = []
 
-food = [500,500]
+food = [500,500] #food position
+
+# Adjust these:
+numberOfBirds = 30
 alpha = 1
 beta = 2
+gamma = 0.8
 
 def getDist(pos, food):
     # return [abs(food[0]-pos[0]), abs(food[1]-pos[1])]
@@ -40,20 +43,21 @@ for i in range(numberOfBirds):
     Pbests.append(getDist(initial,food))
 
 #Simulation runner
+
 while game_over == False:
     screen.fill(BLACK)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             game_over = True
-            
+    # x = input()
     #drawing the food source
-    pygame.draw.rect(screen, YELLOW, [food[0], food[1], 15, 15])
+    pygame.draw.rect(screen, YELLOW, [food[0], food[1], 20, 20])
        
     #PSO   
     for bird in range(len(birds)):
         #Update velocities 
-        velocities[bird][0] = 0.8*velocities[bird][0] + beta*(Gbest(Pbests,bestPos)[0]-birds[bird][0]) + alpha*(bestPos[bird][0]-birds[bird][0]) #+ inertia[0]#- 2*birds[bird][0]
-        velocities[bird][1] = 0.8*velocities[bird][1] + beta*(Gbest(Pbests,bestPos)[1]-birds[bird][1]) + alpha*(bestPos[bird][1]-birds[bird][1]) #+ inertia[1]#- 2*birds[bird][1] 
+        velocities[bird][0] = gamma*velocities[bird][0] + beta*(Gbest(Pbests,bestPos)[0]-birds[bird][0]) + alpha*(bestPos[bird][0]-birds[bird][0]) #+ inertia[0]#- 2*birds[bird][0]
+        velocities[bird][1] = gamma*velocities[bird][1] + beta*(Gbest(Pbests,bestPos)[1]-birds[bird][1]) + alpha*(bestPos[bird][1]-birds[bird][1]) #+ inertia[1]#- 2*birds[bird][1] 
         
         #Update positions
         newpos = [velocities[bird][0] + birds[bird][0], velocities[bird][1] + birds[bird][1]]
